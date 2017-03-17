@@ -1,0 +1,13 @@
+Config {
+    font    = "xft:Ricty:size=14"
+  , bgColor = "#282828"
+  , fgColor = "#a89984"
+  , sepChar = "%"
+  , alignSep = "}{"
+  , lowerOnStart = False
+  , commands = [ Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+               ]
+  , position = Static { xpos = 0, ypos = 0,
+			                  width = 1920, height = 20 }
+  , template = "}{ <fc=#cc241d>%date%</fc>"
+}
