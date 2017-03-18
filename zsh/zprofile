@@ -2,4 +2,6 @@ export PATH=$PATH:/home/eliza/.gem/ruby/2.4.0/bin
 export PATH=$PATH:/home/eliza/.local/bin/
 export PATH=$PATH:/home/eliza/.cache/go/bin/
 
+export ZPLUG_HOME=/home/eiza/.cache/zplug
+export ENHANCD_FILTER=fzf
 export GOPATH=/home/eliza/.go

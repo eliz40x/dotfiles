@@ -2,4 +2,86 @@ export LANG=en_US.UTF-8
 export EDITOR=nvim
 bindkey -v
 bindkey -M viins 'fd' vi-cmd-mode
+
+alias pt=xsel
+alias -s html=firefox
+
+function extract() {
+  case $1 in
+    *.tar.gz|*.tgz) tar xzvf $1;;
+    *.tar.xz) tar Jxvf $1;;
+    *.zip) unzip $1;;
+    *.lzh) lha e $1;;
+    *.tar.bz2|*.tbz) tar xjvf $1;;
+    *.tar.Z) tar zxvf $1;;
+    *.gz) gzip -d $1;;
+    *.bz2) bzip2 -dc $1;;
+    *.Z) uncompress $1;;
+    *.tar) tar xvf $1;;
+    *.arj) unarj $1;;
+  esac
+}
+
+## Auto complete
+# scalper: https://qiita.com/scalper/items/ed83c24f568cbf7f132b
+autoload -U compinit
+compinit
+# 補完方法毎にグループ化する。
+zstyle ':completion:*' format '%B%F{blue}%d%f%b'
+zstyle ':completion:*' group-name ''
+# select=2: 補完候補を一覧から選択する。補完候補が2つ以上なければすぐに補完する。
+zstyle ':completion:*:default' menu select=2
+# 補完候補に色を付ける。
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# 補完候補がなければより曖昧に候補を探す。
+# m:{a-z}={A-Z}: 小文字を大文字に変えたものでも補完する。
+# r:|[._-]=*: 「.」「_」「-」の前にワイルドカード「*」があるものとして補完する。
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' keep-prefix
+zstyle ':completion:*' recent-dirs-insert both
+
+setopt no_beep            # 補完候補がないときなどにビープ音を鳴らさない。
+setopt share_history      # シェルのプロセスごとに履歴を共有
+setopt extended_history   # 履歴ファイルに時刻を記録
+setopt auto_cd            # ディレクトリ名だけで移動
+setopt complete_in_word   # カーソル位置で補完する。
+setopt glob
+setopt glob_complete      # globを展開しないで候補の一覧から補完する。
+setopt extended_glob      # 拡張globを有効にする。
+setopt mark_dirs          # globでパスを生成したときに、パスがディレクトリだったら最後に「/」をつける。
+setopt magic_equal_subst  # コマンドライン引数の --prefix=/usr とか=以降でも補完
+setopt always_last_prompt # 無駄なスクロールを避ける
+
+# 実行したプロセスの消費時間が3秒以上かかったら
+# 自動的に消費時間の統計情報を表示する。
+REPORTTIME=3
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+
+## Git
+# ToruIwashita: http://qiita.com/ToruIwashita/items/fa114effda34214c9371
+autoload -Uz vcs_info    
+setopt prompt_subst    
+zstyle ':vcs_info:*' formats '* %F{green}%b%f'    
+zstyle ':vcs_info:*' actionformats '* %F{green}%b%f(%F{red}%a%f)'    
+precmd() { vcs_info }    
+RPROMPT='%~/%f [${vcs_info_msg_0_}]'    
+
+## Plugins
+source ~/.cache/zplug/init.zsh
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+zplug "b4b4r07/enhancd", use:init.sh
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-completions"
+
+if ! zplug check; then
+  printf "Install? [y/N]: "
+  if read -q; then
+      echo; zplug install
+    fi
+fi
+
+zplug load
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
