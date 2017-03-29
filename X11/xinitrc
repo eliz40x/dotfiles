@@ -1,10 +1,20 @@
+if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+    for f in /etc/X11/xinit/xinitrc.d/?* ; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
+fi
+
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
 ibus-daemon &
 google-ime-skk &
+ntpd -q
 
-setxkbmap -layout us -option ctrl:swapcaps
-
+setxkbmap -layout us -option ctrl:swapcaps &
+# http://qiita.com/ychubachi@github/items/95830219f1bdf912280b
+xmodmap -e 'keycode 255=space'; xmodmap -e 'keycode 65=Shift_L'; ~/opt/xcape/xcape -e '#65=space'
+(conky -c $HOME/Dotfiles/conky | while read LINE; do xsetroot -name "$LINE"; done) &
 exec dwm
 
